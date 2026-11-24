@@ -1,25 +1,147 @@
 # BreadBoard
 
-BreadBoard opens the web software demonstrated in a YouTube tutorial and displays a collapsible tutor in that tab. The dashboard and toolbar side panel both launch lessons.
+**Chrome‑extension tutor that turns a YouTube tutorial into guided practice inside a web app.**  
+It reads the tutorial once (Gemini), then while the learner works it can: explain the current step by voice, point to the relevant control with a separate pointer overlay, inspect the learner's current screen when they say “Help” or “Check my step”, diagnose why their attempt differs from the tutorial, guide one correction, answer questions with tutorial timestamps, and then re‑check the next attempt with a fresh screenshot. The learner always keeps control of the real mouse; BreadBoard never clicks for them.
 
-## Run the prepared lesson
+---
 
-1. With Node.js 20+ installed, run `npm install` and `npm run demo`.
-2. In Chrome, open `chrome://extensions`, enable Developer mode, and load the unpacked `extension/dist` directory.
-3. Open or refresh http://127.0.0.1:8787, optionally enter one follow-up task per line, and select **Try the prepared text lesson**. Photopea opens in a new tab with the first task.
-4. Follow each instruction in Photopea, use the timestamp links to revisit the video, and choose **Mark step done** to advance. Dashboard follow-up tasks appear after the tutorial. Click the tutor header to collapse or expand it.
+## Quick start (no API key required)
 
-The prepared lesson is self-guided and requires no API key. Progress follows the assigned tab across reloads within the browser session.
+```bash
+npm install
+npm run build          # builds shared, server, extension, sandbox
+npm run smoke          # runs the mock‑mode API smoke test
+```
 
-## Learn from another video
+In Chrome:
 
-1. Copy `.env.example` to `.env`. Set `GEMINI_API_KEY` and set `EXTENSION_ORIGIN` to `chrome-extension://YOUR_ID` using the ID shown in Chrome Extensions.
-2. Run `npm run live`. The default model is `gemini-3.8-flash`.
-3. Submit a public tutorial up to 15 minutes long from the dashboard. The analyzer identifies Photopea, Canva, or Figma and extracts timestamped tasks. The corresponding web app opens. Sign in if the software requires an account.
-4. Click the BreadBoard toolbar icon on the software tab to grant screenshot access. You can close the side panel and use **Help**, **Check my step**, or **Ask tutor** in the overlay.
+1. Open `chrome://extensions`, enable **Developer mode**, load the unpacked `extension/dist` directory.
+2. Open http://127.0.0.1:8787 (server starts on this port).
+3. Click **Try the prepared text lesson** – Photopea opens in a new tab with the first task.
+4. Follow each instruction in Photopea, use the timestamp links to revisit the video, and choose **Mark step done** to advance.
 
-These actions send a screenshot to the server-side provider. Starting a lesson or displaying a step takes no screenshot. A successful check advances the lesson. Voice commands use the same tutor actions and may use a remote browser speech service. API keys stay on the server.
+The prepared lesson works entirely in **mock mode** – no Gemini API key is needed.
 
-## Development
+---
 
-Run `npm run build`, `npm test`, `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run smoke`. The dashboard dev server runs with `npm run dev:sandbox` at http://localhost:5173. The tutor API runs on port 8787.
+## Full development workflow
+
+```bash
+# install dependencies
+npm install
+
+# build everything (shared, server, extension, sandbox)
+npm run build
+
+# run the test suite (vitest, 46+ tests after Phase 1)
+npm test
+
+# type‑check, lint, format
+npm run typecheck
+npm run lint
+npm run format:check
+
+# start the server (mock mode if MOCK=1 or no GEMINI_API_KEY)
+npm run dev:server     # Express on http://127.0.0.1:8787
+
+# watch‑build the extension side‑panel
+npm run dev:extension  # Vite watch build to extension/dist
+
+# run the sandbox in dev mode (Vite dev server at http://localhost:5173)
+npm run dev:sandbox
+
+# mock‑mode server with deterministic scripted responses
+npm run mock
+
+# smoke test – hits /api/lesson, /api/guide, /api/check in mock mode
+npm run smoke
+```
+
+---
+
+## Phase summary (what’s in the codebase)
+
+| Phase | What’s implemented | Test count |
+|------|-------------------|------------|
+| **0** | Scaffold: npm workspaces, TS configs, ESLint/Prettier, shared Zod schemas, Express health route (`/health`), MV3 side panel, sandbox page with Move/Type/Brush controls. | 30 tests |
+| **1** | Mock lesson cache, session engine, 46 endpoint tests for `/api/lesson`, `/api/guide`, `/api/check`, JPEG‑header validation, deterministic mock‑mode scripted flow (wrong tool → help → Type tool → check → advance). | 46 tests |
+| **2‑4** | Planned: real Gemini integration (`gemini-3.8‑flash` default), screenshot capture via `activeTab`, pointer overlay (closed Shadow DOM), voice (push‑to‑talk, TTS), `ask` endpoint with clickable timestamps, full end‑to‑end demo on Photopea, DEMO.md & README polish. | – |
+
+---
+
+## Architecture (mermaid diagram)
+
+```mermaid
+flowchart TD
+    subgraph Browser (Extension)
+        A[Side Panel (React)] -->|youtube URL| B[POST /api/lesson]
+        B --> C[Gemini: extract steps]
+        C -->|cache| D[Lesson JSON]
+        D --> E[Step list UI]
+        E -->|Help/Check/Ask| F[POST /api/guide /api/check /api/ask]
+        F -->|screenshot| G[Content script captureVisibleTab]
+        G --> H[Server Gemini vision]
+        H -->|diagnosis + pointer| I[Pointer overlay (Shadow DOM)]
+        I -->|user clicks control| J[Real mouse stays under user control]
+    end
+
+    subgraph Server (Node.js + Express)
+        K[Express app] -->|CORS whitelist| L[/api/lesson]
+        K -->|CORS whitelist| M[/api/guide]
+        K -->|CORS whitelist| N[/api/check]
+        K -->|CORS whitelist| O[/api/ask]
+        K --> P[JSON cache server/data/lessons/]
+        K --> Q[Health check /health]
+    end
+
+    style Browser fill:#f9f9f9,stroke:#333,stroke-width:1px
+    style Server fill:#e8f5ff,stroke:#333,stroke-width:1px
+```
+
+---
+
+## Commands (full list)
+
+```bash
+npm install                              # install all workspaces
+npm run build                            # build shared, server, extension, sandbox
+npm run dev:server                       # start Express (mock if MOCK=1 or no key)
+npm run dev:extension                    # Vite watch build extension/dist
+npm run dev:sandbox                      # Vite dev server for sandbox at localhost:5173
+npm run mock                             # server in deterministic mock mode
+npm run test                             # vitest run (46+ tests after Phase 1)
+npm run typecheck                        # TS strict check across workspaces
+npm run lint                             # ESLint
+npm run format:check                     # Prettier check
+npm run smoke                            # mock‑mode API smoke test (lesson → guide → check)
+```
+
+---
+
+## Known limitations (honest, no invented claims)
+
+- **No real Gemini integration yet** – the server falls back to mock mode when `GEMINI_API_KEY` is absent or `MOCK=1`. Voice (push‑to‑talk, TTS) is not implemented; text commands are the fallback.
+- **CORS is strict** – only the exact `EXTENSION_ORIGIN` (e.g. `chrome-extension://YOUR_ID`) and `localhost:127.0.0.1` are allowed. Other origins get a CORS error.
+- **Screenshot capture needs an `activeTab` grant** – click the BreadBoard toolbar action on the practice tab to grant it; a side‑panel click does **not** grant capture.
+- **Pointer overlay does not auto‑click** – it merely positions a fixed‑z‑index label; the learner must click themselves.
+- **Lesson extraction from YouTube is not wired** – the scaffold provides a hand‑authored fallback (`server/data/lessons/photopea-text-demo.json`) marked “using cached lesson”. Real Gemini video‑understanding is pending Phases 2‑4.
+- **No user accounts, payments, multi‑app support, analytics, or auto‑clicking** – these are out of scope for the MVP.
+- **Performance / improvement numbers are not claimed** – the pitch states benefits are hypotheses.
+
+---
+
+## Demo script (2‑minute rehearsed flow)
+
+> See `DEMO.md` for a precise scripted run‑through of the supported‑mistake demo (Move tool → Help → Type tool → Check → advance to next step → “why is my text not showing?” timestamped answer). The file is generated alongside the code and contains the pre‑flight checklist and recovery plan.
+
+---
+
+## Getting help
+
+- Open an issue on GitHub: <https://github.com/GhostGamr/breadboard-mvp>
+- Review `docs/QA.md` for recent quality‑assurance findings.
+- Run `npm run smoke` to see the mock‑mode API flow in isolation.
+
+---
+
+*BreadBoard – a hackathon prototype (wHACKiest 2026, Track 2: “Beyond the Browser”).*
