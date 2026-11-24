@@ -69,7 +69,7 @@ npm run smoke
 
 ---
 
-## Architecture (mermaid diagram)
+## Architecture (renders on GitHub)
 
 ```mermaid
 flowchart TD
@@ -132,7 +132,7 @@ npm run smoke                            # mock‑mode API smoke test (lesson �
 
 ## Demo script (2‑minute rehearsed flow)
 
-> See `DEMO.md` for a precise scripted run‑through of the supported‑mistake demo (Move tool → Help → Type tool → Check → advance to next step → “why is my text not showing?” timestamped answer). The file is generated alongside the code and contains the pre‑flight checklist and recovery plan.
+See `DEMO.md` for a precise scripted run‑through of the supported‑mistake demo (Move tool → Help → Type tool → Check → advance to next step → “why is my text not showing?” timestamped answer). The file is generated alongside the code and contains the pre‑flight checklist and recovery plan.
 
 ---
 
