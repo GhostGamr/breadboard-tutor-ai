@@ -69,34 +69,9 @@ npm run smoke
 
 ---
 
-## Architecture (renders on GitHub)
+## Architecture overview
 
-```mermaid
-flowchart TD
-    subgraph Browser (Extension)
-        A[Side Panel (React)] -->|youtube URL| B[POST /api/lesson]
-        B --> C[Gemini: extract steps]
-        C -->|cache| D[Lesson JSON]
-        D --> E[Step list UI]
-        E -->|Help/Check/Ask| F[POST /api/guide /api/check /api/ask]
-        F -->|screenshot| G[Content script captureVisibleTab]
-        G --> H[Server Gemini vision]
-        H -->|diagnosis + pointer| I[Pointer overlay (Shadow DOM)]
-        I -->|user clicks control| J[Real mouse stays under user control]
-    end
-
-    subgraph Server (Node.js + Express)
-        K[Express app] -->|CORS whitelist| L[/api/lesson]
-        K -->|CORS whitelist| M[/api/guide]
-        K -->|CORS whitelist| N[/api/check]
-        K -->|CORS whitelist| O[/api/ask]
-        K --> P[JSON cache server/data/lessons/]
-        K --> Q[Health check /health]
-    end
-
-    style Browser fill:#f9f9f9,stroke:#333,stroke-width:1px
-    style Server fill:#e8f5ff,stroke:#333,stroke-width:1px
-```
+The browser extension (React side panel) sends a YouTube URL to the Express server, which either parses the lesson with Gemini (or falls back to a cached hand‑authored lesson). The lesson steps are displayed in the side panel. When the learner clicks **Help** or **Check my step**, a screenshot is captured (via `captureVisibleTab` with an `activeTab` grant) and sent to the server. The server uses Gemini to compare the screenshot against the expected step state, returns a diagnosis, spoken guidance text, and a pointer‑overlay target. The pointer is rendered in a closed Shadow DOM and glides to the suggested control without dispatching a click. The **Ask** endpoint answers free‑form questions with timestamped video references and offers **Check my step**. All inputs and Gemini outputs are validated with Zod; the server enforces CORS only to the exact extension origin and localhost. Phase 0 supplies the scaffold (lesson cache, session state, health check). Phase 1 adds the mock‑mode lesson loop, JPEG validation, and regression tests. Phases 2‑4 will add real Gemini integration, voice (push‑to‑talk/TTS), and the full end‑to‑end demo on Photopea.
 
 ---
 
