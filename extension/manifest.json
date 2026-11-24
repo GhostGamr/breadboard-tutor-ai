@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "BreadBoard Side Panel",
+  "version": "0.0.0",
+  "description": "Phase 0 side panel scaffold for the BreadBoard Photoshop tutor.",
+  "permissions": ["activeTab", "sidePanel"],
+  "host_permissions": [
+    "https://photopea.com/*",
+    "https://www.photopea.com/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Open BreadBoard side panel"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
+}

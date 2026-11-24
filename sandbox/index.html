@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BreadBoard Sandbox (dev)</title>
+  </head>
+  <body>
+    <div id="sandbox-app" data-testid="sandbox-root">
+      <header>
+        <h1>BreadBoard Sandbox</h1>
+        <p>
+          Vite dev harness for the same Move / Type / Brush tools used by the
+          extension. State is mirrored for DOM inspection.
+        </p>
+      </header>
+
+      <div class="toolbar" role="toolbar" aria-label="Sandbox tools">
+        <button type="button" data-tool="move" aria-pressed="true">Move</button>
+        <button type="button" data-tool="type" aria-pressed="false">
+          Type
+        </button>
+        <button type="button" data-tool="brush" aria-pressed="false">
+          Brush
+        </button>
+
+        <label>
+          Text
+          <input id="text-input" type="text" value="BreadBoard" />
+        </label>
+        <label>
+          Color
+          <input id="color-input" type="color" value="#2563eb" />
+        </label>
+        <label>
+          Brush size
+          <input id="brush-size" type="range" min="1" max="40" value="8" />
+        </label>
+      </div>
+
+      <div class="workspace">
+        <canvas
+          id="artboard"
+          width="900"
+          height="560"
+          data-testid="artboard"
+        ></canvas>
+
+        <aside>
+          <h2>Layers</h2>
+          <ul id="layer-list" data-testid="layer-list"></ul>
+        </aside>
+      </div>
+
+      <section>
+        <h2>State</h2>
+        <pre id="sandbox-state" data-testid="sandbox-state"></pre>
+      </section>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
