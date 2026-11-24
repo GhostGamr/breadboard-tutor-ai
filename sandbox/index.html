@@ -3,60 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BreadBoard • Practice studio</title>
+    <title>BreadBoard • Lesson dashboard</title>
   </head>
-  <body class="practice-page">
-    <div id="sandbox-app" data-testid="sandbox-root">
-      <header>
-        <h1>Practice studio</h1>
-        <p>
-          Choose Type, enter your words in the Text field, then click the
-          canvas. Select a layer and change Color to recolour it.
-        </p>
-      </header>
-
-      <div class="toolbar" role="toolbar" aria-label="Sandbox tools">
-        <button type="button" data-tool="move" aria-pressed="true">Move</button>
-        <button type="button" data-tool="type" aria-pressed="false">
-          Type
-        </button>
-        <button type="button" data-tool="brush" aria-pressed="false">
-          Brush
-        </button>
-
-        <label>
-          Text
-          <input id="text-input" type="text" value="BreadBoard" />
-        </label>
-        <label>
-          Color
-          <input id="color-input" type="color" value="#2563eb" />
-        </label>
-        <label>
-          Brush size
-          <input id="brush-size" type="range" min="1" max="40" value="8" />
-        </label>
-      </div>
-
-      <div class="workspace">
-        <canvas
-          id="artboard"
-          width="900"
-          height="560"
-          data-testid="artboard"
-        ></canvas>
-
-        <aside>
-          <h2>Layers</h2>
-          <ul id="layer-list" data-testid="layer-list"></ul>
-        </aside>
-      </div>
-
-      <section hidden>
-        <h2>State</h2>
-        <pre id="sandbox-state" data-testid="sandbox-state"></pre>
-      </section>
-    </div>
+  <body>
     <div id="sidepanel-root"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -220,113 +220,31 @@ footer {
   color: #68756d;
   line-height: 1.6;
 }
-.practice-page {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-  min-height: 100vh;
-  background: #e4e8de;
+.agent {
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+  color: #193c35;
+  background: #fffef8;
+  border: 1px solid #ccd5cb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 22px #183b3433;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
-.practice-page #sidepanel-root {
-  background: #f4f4ed;
-  border-left: 1px solid #cad2c4;
-  height: 100vh;
-  overflow: auto;
-  position: sticky;
-  top: 0;
-}
-#sandbox-app {
-  padding: 30px;
-  min-width: 0;
-}
-#sandbox-app header {
-  margin-bottom: 35px;
-}
-#sandbox-app h1 {
-  font-size: 30px;
-  margin: 12px 0;
-}
-#sandbox-app header p {
-  color: #627068;
-}
-.toolbar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 20px 0;
-}
-.toolbar label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-}
-.toolbar input[type='text'] {
-  width: 120px;
-  border: 1px solid #c1cbb9;
-  padding: 8px;
-  border-radius: 6px;
-}
-.toolbar input[type='range'] {
-  width: 60px;
-}
-.workspace {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-#artboard {
+.agent-toggle {
   width: 100%;
-  height: auto;
-  background: white;
-  box-shadow: 0 12px 35px #193c3512;
-  touch-action: none;
+  background: #214d40;
+  color: white;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
 }
-.workspace aside {
-  background: #f3f5ef;
-  padding: 14px;
-  border: 1px solid #cdd5c6;
-  border-radius: 8px;
+.agent-toggle:hover {
+  background: #32634d;
 }
-.workspace h2 {
-  margin: 0 0 12px;
-  font-size: 12px;
-}
-#layer-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.layer {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  border: 1px solid transparent;
-}
-.layer.is-selected {
-  border-color: #ed8748;
-}
-.layer button {
-  padding: 5px 9px;
-  font-size: 12px;
-}
-pre {
-  overflow: auto;
-  max-height: 200px;
-}
-@media (max-width: 850px) {
-  .practice-page {
-    grid-template-columns: 1fr;
-  }
-  .practice-page #sidepanel-root {
-    height: auto;
-    position: static;
-    border: 0;
-  }
-  #sandbox-app {
-    padding: 20px;
-  }
-  .panel {
-    max-width: none;
-  }
+.agent-body {
+  padding: 0 16px;
+  width: min(320px, calc(100vw - 32px));
 }

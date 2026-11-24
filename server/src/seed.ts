@@ -2,6 +2,7 @@ import { TutorLessonSchema } from '@breadboard/shared';
 
 export const seed = TutorLessonSchema.parse({
   id: 'photopea-text',
+  software: 'photopea',
   videoId: 'zVpeDyBLgiU',
   title: 'How to Add Text in Photopea [2026 Full Guide]',
   durationSeconds: 224,

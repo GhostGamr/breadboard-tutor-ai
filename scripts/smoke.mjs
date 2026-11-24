@@ -12,7 +12,8 @@ const artifacts = [
   'extension/dist/manifest.json',
   'extension/dist/background.js',
   'extension/dist/sidepanel.html',
-  'extension/dist/sandbox.html',
+  'extension/dist/workspace.js',
+  'extension/dist/dashboard-bridge.js',
   'sandbox/dist/index.html',
 ];
 

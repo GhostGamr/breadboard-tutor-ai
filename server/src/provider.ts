@@ -108,6 +108,7 @@ export const mockProvider: TutorProvider = {
     const layer = selectedText(e);
     const key = (
       {
+        task: undefined,
         document: 'project-canvas',
         type: 'type-tool',
         text: 'project-canvas',
@@ -119,6 +120,7 @@ export const mockProvider: TutorProvider = {
     const pass =
       !conflict &&
       {
+        task: false,
         document: e.sandbox?.projectCanvasVisible ?? !!control,
         type:
           !move &&
@@ -151,7 +153,11 @@ export const mockProvider: TutorProvider = {
       outcome,
       diagnosis,
       spokenText: diagnosis,
-      target: control ? { controlId: control.id } : { registryKey: key },
+      target: control
+        ? { controlId: control.id }
+        : key
+          ? { registryKey: key }
+          : undefined,
       confidence: pass ? 1 : 0.8,
       needsUserToExposePanel: !pass && !control && !e.sandbox,
     };

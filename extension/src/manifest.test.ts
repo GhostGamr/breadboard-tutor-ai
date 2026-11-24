@@ -33,12 +33,14 @@ describe('Chrome MV3 manifest', () => {
     expect(manifest.action).toBeDefined();
   });
 
-  it('limits host permissions to Photopea and localhost', () => {
+  it('limits host permissions to supported editors and localhost', () => {
     expect(manifest.host_permissions).toEqual([
       'https://photopea.com/*',
       'https://www.photopea.com/*',
       'http://localhost/*',
       'http://127.0.0.1/*',
+      'https://www.figma.com/*',
+      'https://www.canva.com/*',
     ]);
     expect(manifest.host_permissions).not.toContain('<all_urls>');
   });

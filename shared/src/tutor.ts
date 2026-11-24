@@ -37,7 +37,13 @@ export const TutorStartSchema = z
   })
   .strict();
 
-const skill = z.enum(['document', 'type', 'text', 'colour']);
+export const softwareSchema = z.enum(['photopea', 'figma', 'canva']);
+export const workspaces = {
+  photopea: { name: 'Photopea', url: 'https://www.photopea.com/' },
+  figma: { name: 'Figma', url: 'https://www.figma.com/files' },
+  canva: { name: 'Canva', url: 'https://www.canva.com/' },
+} as const;
+const skill = z.enum(['document', 'type', 'text', 'colour', 'task']);
 const step = z
   .object({
     id,
@@ -54,6 +60,7 @@ export const TutorLessonSchema = z
     id,
     videoId,
     title: text,
+    software: softwareSchema,
     durationSeconds: z.number().int().positive(),
     steps: z.array(step).min(1).max(64),
   })

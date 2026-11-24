@@ -83,10 +83,7 @@ describe('lesson start', () => {
       source: 'seed',
       fallback: true,
     });
-    expect(
-      (await start('https://www.youtube.com/watch?v=abcdefghijk').expect(200))
-        .body,
-    ).toMatchObject({ lesson: seed, fallback: true });
+    await start('https://www.youtube.com/watch?v=abcdefghijk').expect(422);
     await start('https://example.com/watch?v=zVpeDyBLgiU').expect(400);
   });
 });

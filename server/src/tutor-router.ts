@@ -44,6 +44,11 @@ export function tutorRouter(options: TutorOptions) {
       const requested = input.data.url
         ? youtubeVideoId(input.data.url)!
         : seed.videoId;
+      if (!options.generateLesson && requested !== seed.videoId)
+        throw new TutorError(
+          422,
+          'Analyzing this video requires live mode. Choose the prepared Photopea lesson or configure Gemini on the server.',
+        );
       const result =
         options.generateLesson && input.data.url
           ? await options.generateLesson(requested)

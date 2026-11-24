@@ -88,7 +88,6 @@ describe('installSidePanelBehavior', () => {
     expect(source).not.toMatch(/onClicked/);
     expect(source).not.toMatch(/sidePanel\.open/);
     expect(source).not.toMatch(/tabs\.get/);
-    expect(source).not.toMatch(/onMessage/);
     expect(source).not.toMatch(/actionGrantedTabId/);
   });
 });
