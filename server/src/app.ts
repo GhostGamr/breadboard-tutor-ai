@@ -1,11 +1,13 @@
 import { HealthResponseSchema, type HealthResponse } from '@breadboard/shared';
-import express, { type Express } from 'express';
+import express, { type ErrorRequestHandler, type Express } from 'express';
 
 import { resolveAllowedOrigins } from './cors.js';
+import { TutorError } from './session.js';
+import { tutorRouter, type TutorOptions } from './tutor-router.js';
 
 export const SERVICE_VERSION = '0.0.0';
 
-export interface CreateAppOptions {
+export interface CreateAppOptions extends TutorOptions {
   mockMode?: boolean;
   extensionOrigin?: string;
   port?: number;
@@ -21,7 +23,6 @@ export function createApp(options: CreateAppOptions = {}): Express {
   );
 
   app.disable('x-powered-by');
-  app.use(express.json());
   app.use((request, response, next) => {
     response.setHeader('Vary', 'Origin');
 
@@ -63,5 +64,17 @@ export function createApp(options: CreateAppOptions = {}): Express {
     response.status(200).json(body);
   });
 
+  app.use(express.json({ limit: '640kb' }));
+  app.use(tutorRouter(options));
+  const handleError: ErrorRequestHandler = (error, _req, res, _next) => {
+    if (error instanceof TutorError)
+      res.status(error.status).json({ error: error.message });
+    else if (error.status === 413)
+      res.status(413).json({ error: 'JSON body too large' });
+    else if (error.status >= 400 && error.status < 500)
+      res.status(error.status).json({ error: 'Invalid request body' });
+    else res.status(500).json({ error: 'Tutor request failed' });
+  };
+  app.use(handleError);
   return app;
 }
