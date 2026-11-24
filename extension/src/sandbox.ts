@@ -461,6 +461,11 @@ export function createSandbox(
       commit({
         ...state,
         draft: { ...state.draft, color: colorInput.value || '#2563eb' },
+        layers: state.layers.map((layer) =>
+          layer.id === state.selectedLayerId && layer.kind === 'text'
+            ? { ...layer, color: colorInput.value || '#2563eb' }
+            : layer,
+        ),
       });
     colorInput.addEventListener('input', handleInput);
     cleanups.push(() => colorInput.removeEventListener('input', handleInput));

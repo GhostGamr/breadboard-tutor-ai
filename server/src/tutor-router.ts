@@ -25,6 +25,12 @@ import { assertFresh, reserve, Sessions, TutorError } from './session.js';
 export interface TutorOptions {
   cacheDir?: string;
   provider?: TutorProvider;
+  generateLesson?: (videoId: string) => Promise<{
+    lesson: import('@breadboard/shared').TutorLesson;
+    source: 'provider' | 'cache';
+    cached: boolean;
+    fallback: boolean;
+  }>;
 }
 
 export function tutorRouter(options: TutorOptions) {
@@ -38,10 +44,13 @@ export function tutorRouter(options: TutorOptions) {
       const requested = input.data.url
         ? youtubeVideoId(input.data.url)!
         : seed.videoId;
-      const result = await loadLesson(
-        options.cacheDir ?? resolve('.breadboard-cache'),
-        requested,
-      );
+      const result =
+        options.generateLesson && input.data.url
+          ? await options.generateLesson(requested)
+          : await loadLesson(
+              options.cacheDir ?? resolve('.breadboard-cache'),
+              requested,
+            );
       res.json(
         TutorStartResponseSchema.parse({
           ...result,
@@ -95,6 +104,14 @@ export function tutorRouter(options: TutorOptions) {
           ) {
             throw new TutorError(502, 'Invalid provider decision');
           }
+          if (
+            outcome === 'pass' &&
+            (decision.confidence < 0.85 || decision.needsUserToExposePanel)
+          )
+            throw new TutorError(
+              502,
+              'AI could not confidently verify this step. Expose the relevant panel and retry.',
+            );
           const index = s.index + Number(outcome === 'pass');
           const response = TutorResponseSchema.parse({
             ...decision,
@@ -111,6 +128,12 @@ export function tutorRouter(options: TutorOptions) {
               s.baseline = {
                 id: layer.id,
                 colour: layer.colour?.toLowerCase(),
+                jpegBase64: evidence.jpegBase64,
+              };
+            else if (!evidence.sandbox)
+              s.baseline = {
+                id: 'visual-text',
+                jpegBase64: evidence.jpegBase64,
               };
           } else if (
             outcome === 'retry' &&

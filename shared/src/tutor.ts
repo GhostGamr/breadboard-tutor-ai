@@ -73,7 +73,7 @@ export const TutorStartResponseSchema = z
     sessionId: id,
     lesson: TutorLessonSchema,
     step,
-    source: z.enum(['seed', 'cache']),
+    source: z.enum(['seed', 'cache', 'provider']),
     cached: z.boolean(),
     mock: z.boolean(),
     fallback: z.boolean(),

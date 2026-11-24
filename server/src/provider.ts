@@ -13,7 +13,7 @@ export interface TutorProvider {
     step: TutorStep;
     evidence: TutorEvidence;
     question?: string;
-    baseline?: { id: string; colour?: string };
+    baseline?: { id: string; colour?: string; jpegBase64?: string };
   }): Promise<TutorDecision>;
 }
 
@@ -153,7 +153,7 @@ export const mockProvider: TutorProvider = {
       spokenText: diagnosis,
       target: control ? { controlId: control.id } : { registryKey: key },
       confidence: pass ? 1 : 0.8,
-      needsUserToExposePanel: !control && !e.sandbox,
+      needsUserToExposePanel: !pass && !control && !e.sandbox,
     };
   },
 };

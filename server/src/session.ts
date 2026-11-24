@@ -22,7 +22,7 @@ export interface Session {
   captures: Set<string>;
   recent: number[];
   history: { stepId: string; outcome: TutorDecision['outcome'] }[];
-  baseline?: { id: string; colour?: string };
+  baseline?: { id: string; colour?: string; jpegBase64?: string };
   expires: number;
 }
 

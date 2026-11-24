@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Phase 0 scaffold for the BreadBoard Photoshop tutor.",
+  "description": "Context-aware Photopea learning companion",
   "workspaces": [
     "shared",
     "server",
@@ -23,7 +23,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "smoke": "node scripts/smoke.mjs",
-    "mock": "npm run dev --workspace @breadboard/server -- --mock"
+    "mock": "npm run dev --workspace @breadboard/server -- --mock",
+    "demo": "npm run build && node server/dist/index.js --mock",
+    "live": "npm run build && node server/dist/index.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

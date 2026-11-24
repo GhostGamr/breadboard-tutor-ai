@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BreadBoard Sandbox (dev)</title>
+    <title>BreadBoard • Practice studio</title>
   </head>
-  <body>
+  <body class="practice-page">
     <div id="sandbox-app" data-testid="sandbox-root">
       <header>
-        <h1>BreadBoard Sandbox</h1>
+        <h1>Practice studio</h1>
         <p>
-          Vite dev harness for the same Move / Type / Brush tools used by the
-          extension. State is mirrored for DOM inspection.
+          Choose Type, enter your words in the Text field, then click the
+          canvas. Select a layer and change Color to recolour it.
         </p>
       </header>
 
@@ -52,11 +52,12 @@
         </aside>
       </div>
 
-      <section>
+      <section hidden>
         <h2>State</h2>
         <pre id="sandbox-state" data-testid="sandbox-state"></pre>
       </section>
     </div>
+    <div id="sidepanel-root"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

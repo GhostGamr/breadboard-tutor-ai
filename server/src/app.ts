@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { HealthResponseSchema, type HealthResponse } from '@breadboard/shared';
 import express, { type ErrorRequestHandler, type Express } from 'express';
 
@@ -66,6 +67,11 @@ export function createApp(options: CreateAppOptions = {}): Express {
 
   app.use(express.json({ limit: '640kb' }));
   app.use(tutorRouter(options));
+  app.use(
+    express.static(
+      fileURLToPath(new URL('../../sandbox/dist/', import.meta.url)),
+    ),
+  );
   const handleError: ErrorRequestHandler = (error, _req, res, _next) => {
     if (error instanceof TutorError)
       res.status(error.status).json({ error: error.message });

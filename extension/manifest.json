@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "BreadBoard Side Panel",
   "version": "0.0.0",
-  "description": "Phase 0 side panel scaffold for the BreadBoard Photoshop tutor.",
-  "permissions": ["activeTab", "sidePanel"],
+  "description": "Learn Photopea with contextual voice guidance and a passive pointer.",
+  "permissions": ["activeTab", "sidePanel", "scripting"],
   "host_permissions": [
     "https://photopea.com/*",
     "https://www.photopea.com/*",
